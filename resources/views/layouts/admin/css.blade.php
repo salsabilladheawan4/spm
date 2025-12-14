@@ -9,5 +9,5 @@
 <link rel="stylesheet" href="{{ asset('assets-admin/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
 <link rel="stylesheet" href="{{ asset('assets-admin/vendors/bootstrap-icons/bootstrap-icons.css') }}">
 <link rel="stylesheet" href="{{ asset('assets-admin/css/app.css') }}">
-<link rel="shortcut icon" href="{{ asset('assets-admin/images/favicon.svg') }}" type="image/x-icon">
+<link rel="shortcut icon" href="{{ asset('assets-admin/images/logos/suararakyat.png') }}" type="image/x-icon">
 @stack('css')

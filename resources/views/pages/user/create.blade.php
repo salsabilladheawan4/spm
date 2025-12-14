@@ -1,44 +1,63 @@
 @extends('layouts.admin.app')
 
+
 @section('title', 'Tambah User')
 
+
 @section('content')
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title fw-semibold mb-4">Form Tambah User Baru</h5>
+<div class="card w-100">
+  <div class="card-body p-4">
+    <h5 class="card-title fw-semibold mb-4">Tambah User Baru</h5>
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
-    <form action="{{ route('user.store') }}" method="POST">
+    <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
-      <div class="mb-3">
-        <label for="name" class="form-label">Nama Lengkap</label>
-        <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
-      </div>
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
-      </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required>
+      <div class="row">
+        <!-- KIRI -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+          </div>
+
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+          </div>
+
+
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select name="role" class="form-select" required>
+              <option value="">-- Pilih Role --</option>
+              <option value="Administrator">Administrator</option>
+              <option value="Petugas">Petugas</option>
+            </select>
+          </div>
+        </div>
+
+
+        <!-- KANAN -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+
+
+          <div class="mb-3">
+            <label class="form-label">Foto Profil</label>
+            <input type="file" name="photo" class="form-control">
+          </div>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-      </div>
 
-      <button type="submit" class="btn btn-primary">Simpan</button>
-      <a href="{{ route('user.index') }}" class="btn btn-outline-secondary ms-2">Batal</a>
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <a href="{{ route('user.index') }}" class="btn btn-secondary">Batal</a>
+        <button type="submit" class="btn btn-primary">Simpan User</button>
+      </div>
     </form>
   </div>
 </div>

@@ -47,6 +47,15 @@
                 </li>
 
                 <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('pengaduan.*') ? 'active' : '' }}" href="{{ route('pengaduan.index') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-files"></i>
+                        </span>
+                        <span class="hide-menu">Data Pelayanan</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
                     <a class="sidebar-link {{ request()->routeIs('warga.*') ? 'active' : '' }}" href="{{ route('warga.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-users"></i>

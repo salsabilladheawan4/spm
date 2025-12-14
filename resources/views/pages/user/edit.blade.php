@@ -3,52 +3,58 @@
 @section('title', 'Edit User')
 
 @section('content')
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title fw-semibold mb-4">Form Edit User</h5>
+<div class="card w-100">
+  <div class="card-body p-4">
+    <h5 class="card-title fw-semibold mb-4">Edit User</h5>
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {!! session('success') !!}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('user.update', $dataUser->id) }}" method="POST">
+    <form action="{{ route('user.update', $dataUser->id) }}" method="POST" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-      <div class="mb-3">
-        <label for="name" class="form-label">Nama Lengkap</label>
-        <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $dataUser->name) }}" required>
-      </div>
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $dataUser->email) }}" required>
+
+      <div class="row">
+        <!-- KIRI -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" name="name" class="form-control" value="{{ old('name', $dataUser->name) }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ old('email', $dataUser->email) }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select name="role" class="form-select" required>
+              <option value="">-- Pilih Role --</option>
+              <option value="Administrator" {{ old('role', $dataUser->role) == 'Administrator' ? 'selected' : '' }}>Administrator</option>
+              <option value="Petugas" {{ old('role', $dataUser->role) == 'Petugas' ? 'selected' : '' }}>Petugas</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- KANAN -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Password <small class="text-muted">(Kosongkan jika tidak diubah)</small></label>
+            <input type="password" name="password" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Foto Profil</label>
+            <input type="file" name="photo" class="form-control">
+            @if($dataUser->photo)
+              <small class="text-muted">Foto saat ini: {{ $dataUser->photo }}</small>
+            @endif
+          </div>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label for="password" class="form-label">Password Baru (Opsional)</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Isi hanya jika ingin mengubah password">
-        <small class="form-text">Kosongkan jika tidak ingin mengubah password.</small>
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <a href="{{ route('user.index') }}" class="btn btn-secondary">Batal</a>
+        <button type="submit" class="btn btn-primary">Update User</button>
       </div>
-
-      <div class="mb-3">
-        <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ketik ulang password baru">
-      </div>
-
-      <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-      <a href="{{ route('user.index') }}" class="btn btn-outline-secondary ms-2">Batal</a>
     </form>
   </div>
 </div>
