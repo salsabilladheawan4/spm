@@ -12,7 +12,7 @@ class KategoriPengaduanController extends Controller
      */
     public function index()
     {
-        $kategoris = KategoriPengaduan::latest()->get();
+        $kategoris = KategoriPengaduan::latest()->paginate(10);
         return view('pages.kategori.index', compact('kategoris'));
     }
 

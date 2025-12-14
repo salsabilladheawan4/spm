@@ -12,8 +12,10 @@ class KategoriPelayananController extends Controller
      */
     public function index()
     {
-        $items = KategoriPelayanan::latest()->get(); // Sesuai dengan view index
+        $items = KategoriPelayanan::latest()->paginate(10);
         return view('pages.kategoripelayanan.index', compact('items'));
+
+        KategoriPelayanan::pagination(10)->onEachSide(2);
     }
 
     /**

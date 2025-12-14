@@ -66,6 +66,9 @@
           </tr>
           @endforeach
         </tbody>
+        <div class="mt-3">
+          {{ $wargas->links() }}
+        </div>
       </table>
     </div>
   </div>

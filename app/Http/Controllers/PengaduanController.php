@@ -19,6 +19,7 @@ class PengaduanController extends Controller
         // Eager loading relasi warga dan kategori
         $items = Pengaduan::with(['warga', 'kategori'])->latest()->paginate(10);
         return view('pages.pengaduan.index', compact('items'));
+        
     }
 
     /**

@@ -12,7 +12,7 @@ class WargaController extends Controller
         $columns = ['jenis_kelamin'];
         $wargas = Warga::latest()
                 ->filter($request, $columns) // Panggil scopeFilter
-                ->get();
+                ->paginate(10);
         return view('pages.warga.index', compact('wargas'));
     }
 

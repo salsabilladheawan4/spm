@@ -16,8 +16,10 @@ class PelayananController extends Controller
      */
     public function index()
     {
-        $items = Pelayanan::with(['warga', 'kategori'])->latest()->get();
+        $items = Pelayanan::with(['warga', 'kategori'])->latest()->paginate(10);
         return view('pages.pelayanan.index', compact('items'));
+
+        
     }
 
     /**
@@ -66,7 +68,7 @@ class PelayananController extends Controller
 
         $pelayanan->save();
 
-        return redirect()->route('pages.pelayanan.index')->with('success', 'Pelayanan berhasil dibuat.');
+        return redirect()->route('pelayanan.index')->with('success', 'Pelayanan berhasil dibuat.');
     }
 
     /**
@@ -115,7 +117,7 @@ class PelayananController extends Controller
 
         $pelayanan->save();
 
-        return redirect()->route('pages.pelayanan.index')->with('success', 'Pelayanan berhasil diperbarui.');
+        return redirect()->route('pelayanan.index')->with('success', 'Pelayanan berhasil diperbarui.');
     }
 
     /**
@@ -131,6 +133,6 @@ class PelayananController extends Controller
 
         $pelayanan->delete();
 
-        return redirect()->route('pages.pelayanan.index')->with('success', 'Pelayanan berhasil dihapus.');
+        return redirect()->route('pelayanan.index')->with('success', 'Pelayanan berhasil dihapus.');
     }
 }
