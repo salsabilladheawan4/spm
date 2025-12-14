@@ -22,10 +22,10 @@
               <div class="card-body">
 
                 <a href="{{ url('/') }}" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                  <img src="{{ asset('assets-admin/images/logos/suararakyat.png') }}" width="180" alt="">
+                  <img src="{{ asset('assets-admin/images/logos/suararakyat.png') }}" width="120" alt="">
                 </a>
 
-                <p class="text-center">Your Social Campaigns</p>
+                <p class="text-center">Sistem Informasi Pengaduan Masyarakat</p>
                 <form action ="{{ route('login.submit') }}" method="POST">
                     @csrf
                   <div class="mb-3">

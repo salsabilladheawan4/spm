@@ -63,7 +63,7 @@
         @yield('content')
 
         <div class="py-6 px-6 text-center">
-            <p class="mb-0 fs-4">Design and Developed by <b>Salsabilla Dheawan Shenza</b> Distributed by <a href="https://themewagon.com">ThemeWagon</a></p>
+            <p class="mb-0 fs-4">Design and Developed by <b>Rajif and Salsabilla</b> Distributed by <a href="https://themewagon.com">ThemeWagon</a></p>
         </div>
       </div>
 

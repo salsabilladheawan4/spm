@@ -4,7 +4,7 @@
             <p>2025 &copy; Sistem Inventaris Desa</p>
         </div>
         <div class="float-end">
-            <p>Crafted by M. Dzakwan Syafiq</p>
+            <p>Crafted by Rajif and Salsabilla</p>
         </div>
     </div>
 </footer>

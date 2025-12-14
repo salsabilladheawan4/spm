@@ -1,8 +1,8 @@
 <aside class="left-sidebar">
     <div>
-        <div class="brand-logo d-flex align-items-center justify-content-between">
+        <div class="brand-logo d-flex align-items-center justify-content-between p-y px-4 py-4">
             <a href="{{ route('dashboard') }}" class="text-nowrap logo-img">
-                <img src="{{ asset('assets-admin/images/logos/suararakyat.png') }}" width="180" alt="" />
+                <img src="{{ asset('assets-admin/images/logos/suararakyat-logo.png') }}" width="150" height="auto" alt="" />
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                 <i class="ti ti-x fs-8"></i>
