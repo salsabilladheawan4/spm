@@ -9,7 +9,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\KategoriPengaduanController;
-
+use App\Http\Controllers\PelayananController;
+use App\Http\Controllers\KategoriPelayananController;
 
 Route::get('/', function () {
     return redirect()->route('auth.login');
@@ -50,4 +51,18 @@ Route::middleware(['auth'])->group(function () {
         'pengaduan' => 'pengaduan_id'
     ]);
 
+
+    // Route untuk Pelayanan dan Kategori Pelayanan di dalam middleware 'auth'
+    Route::middleware(['auth'])->group(function () {
+
+        // CRUD Kategori Pelayanan
+        Route::resource('kategoripelayanan', KategoriPelayananController::class)->parameters([
+            'kategoripelayanan' => 'kategori_id'
+        ]);
+
+        // CRUD Pelayanan
+        Route::resource('pelayanan', PelayananController::class)->parameters([
+            'pelayanan' => 'id'
+        ]);
+    });
 });

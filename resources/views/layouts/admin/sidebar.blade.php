@@ -33,10 +33,19 @@
                         <span>
                             <i class="ti ti-category"></i>
                         </span>
-                        <span class="hide-menu">Data Kategori</span>
+                        <span class="hide-menu">Data Kategori Pengaduan</span>
                     </a>
                 </li>
 
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('kategoripelayanan.*') ? 'active' : '' }}" href="{{ route('kategoripelayanan.index') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-category"></i>
+                        </span>
+                        <span class="hide-menu">Data Kategori Pelayanan</span>
+                    </a>
+                </li>
+                
                 <li class="sidebar-item">
                     <a class="sidebar-link {{ request()->routeIs('pengaduan.*') ? 'active' : '' }}" href="{{ route('pengaduan.index') }}" aria-expanded="false">
                         <span>
@@ -47,7 +56,7 @@
                 </li>
 
                 <li class="sidebar-item">
-                    <a class="sidebar-link {{ request()->routeIs('pengaduan.*') ? 'active' : '' }}" href="{{ route('pengaduan.index') }}" aria-expanded="false">
+                    <a class="sidebar-link {{ request()->routeIs('pelayanan.*') ? 'active' : '' }}" href="{{ route('pelayanan.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-files"></i>
                         </span>
