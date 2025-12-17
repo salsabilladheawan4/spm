@@ -22,7 +22,7 @@
               <div class="card-body">
 
                 <a href="{{ url('/') }}" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                  <img src="{{ asset('assets-admin/images/logos/dark-logo.svg') }}" width="180" alt="">
+                  <img src="{{ asset('assets-admin/images/logos/suararakyat.png') }}" width="180" alt="">
                 </a>
                 <p class="text-center">Your Social Campaigns</p>
 

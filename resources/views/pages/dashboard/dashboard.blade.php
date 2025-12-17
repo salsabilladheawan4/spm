@@ -132,42 +132,54 @@
     </div>
     <div class="row mt-5">
         <div class="col-lg-12">
-            <h5 class="fw-semibold mb-4">Kategori Pelayanan & Jumlah Pelayanan</h5>
-            <div class="table-responsive">
-                <table class="table table-striped text-nowrap mb-0 align-middle">
-                    <thead class="text-dark fs-5">
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Kategori</th>
-                            <th>Jumlah Pelayanan</th>
-                            <th>SLA (Hari)</th>
-                            <th>Prioritas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($kategori_pelayanan as $item)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama }}</td>
-                            <td>{{ $item->pelayanans_count }}</td>
-                            <td>{{ $item->sla_hari ?? '-' }}</td>
-                            <td>
-                                @if($item->prioritas == 'tinggi')
-                                <span class="badge bg-danger">Tinggi</span>
-                                @elseif($item->prioritas == 'sedang')
-                                <span class="badge bg-warning">Sedang</span>
-                                @else
-                                <span class="badge bg-success">Rendah</span>
-                                @endif
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="text-center">Belum ada kategori pelayanan.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <h5 class="fw-semibold mb-4">Statistik Penilaian Layanan</h5>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped text-nowrap mb-0 align-middle">
+                            <thead class="text-dark fs-5">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Pengaduan</th>
+                                    <th>Rating</th>
+                                    <th>Komentar</th>
+                                    <th>Tanggal Penilaian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($penilaian_layanan as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        <strong>#{{ $item->pengaduan->pengaduan_id }}</strong><br>
+                                        <small class="text-muted">
+                                            {{ Str::limit($item->pengaduan->judul, 40) }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">
+                                            {{ $item->rating }} ⭐
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ $item->komentar ? Str::limit($item->komentar, 40) : '-' }}
+                                    </td>
+                                    <td>
+                                        {{ $item->created_at->format('d M Y') }}
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        Belum ada penilaian layanan.
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
