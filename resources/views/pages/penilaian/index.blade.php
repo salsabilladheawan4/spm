@@ -37,7 +37,7 @@
         <tbody>
           @foreach ($penilaian as $item)
           <tr>
-            <td>{{ $loop->iteration }}</td>
+            <td>{{ $penilaian->firstItem() + $loop->index }}</td>
             <td>
               #{{ $item->pengaduan->pengaduan_id ?? '-' }} <br>
               <small class="text-muted">
@@ -69,10 +69,10 @@
           </tr>
           @endforeach
         </tbody>
+        <div class="mt-3">
+          {{ $penilaian->links() }}
+        </div>
       </table>
-    </div>
-    <div class="mt-3">
-      {{ $items->links() }}
     </div>
   </div>
 </div>

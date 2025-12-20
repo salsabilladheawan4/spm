@@ -76,9 +76,6 @@
         </div>
       </table>
     </div>
-    <div class="mt-3">
-      {{ $items->links() }}
-    </div>
   </div>
 </div>
 @endsection

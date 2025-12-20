@@ -51,7 +51,7 @@
           @foreach ($wargas as $warga)
           <tr>
             <td class="border-bottom-0">
-              <h6 class="fw-semibold mb-0">{{ $loop->iteration }}</h6>
+              <h6 class="fw-semibold mb-0">{{ $wargas->firstItem() + $loop->index }}</h6>
             </td>
             <td class="border-bottom-0">
               <p class="mb-0 fw-normal">{{ $warga->no_ktp }}</p>
@@ -84,9 +84,6 @@
           {{ $wargas->links() }}
         </div>
       </table>
-    </div>
-    <div class="mt-3">
-      {{ $items->links() }}
     </div>
   </div>
 </div>

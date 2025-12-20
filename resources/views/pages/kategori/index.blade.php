@@ -48,7 +48,7 @@
           @foreach ($kategoris as $item)
           <tr>
             <td class="border-bottom-0">
-              <h6 class="fw-semibold mb-0">{{ $loop->iteration }}</h6>
+              <h6 class="fw-semibold mb-0">{{ $kategoris->firstItem() + $loop->index }}</h6>
             </td>
             <td>{{ $item->nama }}</td>
             <td>{{ $item->sla_hari }} Hari</td>
@@ -80,9 +80,6 @@
           {{ $kategoris->links() }}
         </div>
       </table>
-    </div>
-    <div class="mt-3">
-      {{ $items->links() }}
     </div>
   </div>
 </div>
