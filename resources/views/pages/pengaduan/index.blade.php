@@ -3,24 +3,24 @@
 @section('title', 'Daftar Pengaduan')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('assets-admin/vendors/simple-datatables/style.css') }}">
+<link rel="stylesheet" href="{{ asset('assets-admin/vendors/simple-datatables/style.css') }}">
 @endpush
 
 @section('content')
 <div class="card w-100">
   <div class="card-body p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="card-title fw-semibold">Pengaduan Masuk</h5>
-        <a href="{{ route('pengaduan.create') }}" class="btn btn-primary">
-            <i class="ti ti-plus"></i> Buat Pengaduan
-        </a>
+      <h5 class="card-title fw-semibold">Pengaduan Masuk</h5>
+      <a href="{{ route('pengaduan.create') }}" class="btn btn-primary">
+        <i class="ti ti-plus"></i> Buat Pengaduan
+      </a>
     </div>
 
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ session('success') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     @endif
 
     <div class="table-responsive">
@@ -43,18 +43,18 @@
             <td>{{ $item->kategori->nama }}</td>
             <td>{{ Str::limit($item->judul, 30) }}</td>
             <td>
-                @php
-                    $badges = [
-                        'pending' => 'bg-secondary',
-                        'verifikasi' => 'bg-info',
-                        'proses' => 'bg-warning',
-                        'selesai' => 'bg-success',
-                        'ditolak' => 'bg-danger'
-                    ];
-                @endphp
-                <span class="badge {{ $badges[$item->status] ?? 'bg-secondary' }}">
-                    {{ ucfirst($item->status) }}
-                </span>
+              @php
+              $badges = [
+              'pending' => 'bg-secondary',
+              'verifikasi' => 'bg-info',
+              'proses' => 'bg-warning',
+              'selesai' => 'bg-success',
+              'ditolak' => 'bg-danger'
+              ];
+              @endphp
+              <span class="badge {{ $badges[$item->status] ?? 'bg-secondary' }}">
+                {{ ucfirst($item->status) }}
+              </span>
             </td>
             <td>
               <a href="{{ route('pengaduan.show', $item->pengaduan_id) }}" class="btn btn-info btn-sm" title="Lihat Detail">
@@ -76,11 +76,16 @@
         </div>
       </table>
     </div>
+    <div class="mt-3">
+      {{ $items->links() }}
+    </div>
   </div>
 </div>
 @endsection
 
 @push('scripts-bottom')
-    <script src="{{ asset('assets-admin/vendors/simple-datatables/simple-datatables.js') }}"></script>
-    <script>new simpleDatatables.DataTable(document.querySelector('#table-pengaduan'));</script>
+<script src="{{ asset('assets-admin/vendors/simple-datatables/simple-datatables.js') }}"></script>
+<script>
+  new simpleDatatables.DataTable(document.querySelector('#table-pengaduan'));
+</script>
 @endpush

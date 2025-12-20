@@ -47,6 +47,7 @@
                         <span class="hide-menu">Data Pengaduan</span>
                     </a>
                 </li>
+                
 
                 <li class="sidebar-item">
                     <a class="sidebar-link {{ request()->routeIs('penilaian.*') ? 'active' : '' }}"
@@ -61,6 +62,15 @@
                        href="{{ route('warga.index') }}">
                         <span><i class="ti ti-users"></i></span>
                         <span class="hide-menu">Data Warga</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('tindak-lanjut.create') ? 'active' : '' }}"
+                        href="{{ route('tindak-lanjut.create') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-edit"></i>
+                        </span>
+                        <span class="hide-menu">Input Tindak Lanjut</span>
                     </a>
                 </li>
 
