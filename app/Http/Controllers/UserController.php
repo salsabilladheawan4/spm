@@ -28,29 +28,35 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //dd($request->all())
-        $request->validate([
-		    'name'  => 'required|max:100',
-            'role' => 'required|in:admin,staff,warga',
-		    'email' => ['required','email','unique:users,email'],
-		    'password' => 'required|min:8',
-		],[
-            'nama.required'=>'Nama tidak boleh kosong',
-            'password.required'=>'Password tidak boleh kosong',
-            'email.required'=>'Email tidak boleh kosong',
-            'email.email'=>'Email tidak valid'
-        ]);
+{
+    $request->validate([
+        'name'  => 'required|max:100',
+        'role' => 'required|in:admin,staff,warga',
+        'email' => ['required','email','unique:users,email'],
+        'password' => 'required|min:8',
+        // TAMBAHKAN VALIDASI FOTO
+        'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $data['name']     = $request->name;
-        $data['email']    = $request->email;
-        $data['role']    = $request->role;
-        $data['password'] = Hash::make($request->password);
+    $data['name']     = $request->name;
+    $data['email']    = $request->email;
+    $data['role']     = $request->role;
+    $data['password'] = Hash::make($request->password);
 
-        User::create($data);
+    // LOGIKA UPLOAD FOTO (Tambahkan bagian ini)
+    if ($request->hasFile('profile_photo')) {
+        $file = $request->file('profile_photo');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads/profile_pictures'), $filename);
 
-        return redirect()->route('user.index')->with('success', 'Penambahan Data Berhasil!');
+        // Masukkan nama file ke array $data agar tersimpan di DB
+        $data['profile_photo'] = $filename;
     }
+
+    User::create($data); // Sekarang 'profile_photo' ada di dalam $data
+
+    return redirect()->route('user.index')->with('success', 'Penambahan Data Berhasil!');
+}
 
     /**
      * Display the specified resource.
@@ -73,18 +79,35 @@ class UserController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $user_id = $id;
-        $dataUser= User::findOrFail($user_id);
+{
+    $dataUser = User::findOrFail($id);
 
-        $dataUser->name = $request->name;
-        $dataUser->role = $request->role;
-        $dataUser->email = $request->email;
+    $dataUser->name = $request->name;
+    $dataUser->role = $request->role;
+    $dataUser->email = $request->email;
+
+    if($request->password) {
         $dataUser->password = Hash::make($request->password);
-
-        $dataUser->save();
-        return redirect()->route('user.index')->with('success','Data Berhasil Diupdate!');
     }
+
+    // LOGIKA UPDATE FOTO (Tambahkan bagian ini)
+    if ($request->hasFile('profile_photo')) {
+        $file = $request->file('profile_photo');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = public_path('uploads/profile_pictures');
+
+        // Hapus foto lama jika ada fisiknya
+        if ($dataUser->profile_photo && file_exists($path . '/' . $dataUser->profile_photo)) {
+            unlink($path . '/' . $dataUser->profile_photo);
+        }
+
+        $file->move($path, $filename);
+        $dataUser->profile_photo = $filename; // Update kolom di DB
+    }
+
+    $dataUser->save();
+    return redirect()->route('user.index')->with('success','Data Berhasil Diupdate!');
+}
 
     /**
      * Remove the specified resource from storage.

@@ -40,7 +40,7 @@
             <td class="border-bottom-0"><h6 class="fw-semibold mb-0">{{ $loop->iteration }}</h6></td>
             <td>
                 @if($item->profile_photo)
-                    <img src="{{ asset('uploads/profile_pictures/' . $user->profile_photo) }}"
+                    <img src="{{ asset('uploads/profile_pictures/' . $item->profile_photo) }}"
                          alt="Avatar" width="45" height="45" class="rounded-circle object-fit-cover shadow-sm">
                 @else
                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px;">
