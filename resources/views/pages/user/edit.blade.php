@@ -28,8 +28,9 @@
             <label class="form-label">Role</label>
             <select name="role" class="form-select" required>
               <option value="">-- Pilih Role --</option>
-              <option value="Administrator" {{ old('role', $dataUser->role) == 'Administrator' ? 'selected' : '' }}>Administrator</option>
-              <option value="Petugas" {{ old('role', $dataUser->role) == 'Petugas' ? 'selected' : '' }}>Petugas</option>
+              <option value="admin" {{ old('role', $dataUser->role) == 'admin' ? 'selected' : '' }}>Administrator</option>
+              <option value="staff" {{ old('role', $dataUser->role) == 'staff' ? 'selected' : '' }}>Petugas</option>
+              <option value="warga" {{ old('role', $dataUser->role) == 'warga' ? 'selected' : '' }}>Warga</option>
             </select>
           </div>
         </div>

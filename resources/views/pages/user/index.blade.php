@@ -30,6 +30,7 @@
             <th class="border-bottom-0"><h6 class="fw-semibold mb-0">#</h6></th>
             <th class="border-bottom-0"><h6 class="fw-semibold mb-0">Nama Lengkap</h6></th>
             <th class="border-bottom-0"><h6 class="fw-semibold mb-0">Email</h6></th>
+            <th class="border-bottom-0"><h6 class="fw-semibold mb-0">Role</h6></th>
             <th class="border-bottom-0"><h6 class="fw-semibold mb-0">Aksi</h6></th>
           </tr>
         </thead>
@@ -42,6 +43,9 @@
             </td>
             <td class="border-bottom-0">
               <p class="mb-0 fw-normal">{{ $item->email }}</p>
+            </td>
+            <td class="border-bottom-0">
+              <p class="mb-0 fw-normal">{{ $item->role }}</p>
             </td>
             <td class="border-bottom-0">
               <a href="{{ route('user.edit', $item->id) }}" class="btn btn-warning btn-sm">

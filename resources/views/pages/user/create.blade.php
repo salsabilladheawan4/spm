@@ -31,8 +31,9 @@
             <label class="form-label">Role</label>
             <select name="role" class="form-select" required>
               <option value="">-- Pilih Role --</option>
-              <option value="Administrator">Administrator</option>
-              <option value="Petugas">Petugas</option>
+              <option value="admin">Administrator</option>
+              <option value="staff">Petugas</option>
+              <option value="warga">Warga</option>
             </select>
           </div>
         </div>

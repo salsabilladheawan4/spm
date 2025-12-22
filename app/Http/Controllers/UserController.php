@@ -32,6 +32,7 @@ class UserController extends Controller
         //dd($request->all())
         $request->validate([
 		    'name'  => 'required|max:100',
+            'role' => 'required|in:admin,staff,warga',
 		    'email' => ['required','email','unique:users,email'],
 		    'password' => 'required|min:8',
 		],[
@@ -43,6 +44,7 @@ class UserController extends Controller
 
         $data['name']     = $request->name;
         $data['email']    = $request->email;
+        $data['role']    = $request->role;
         $data['password'] = Hash::make($request->password);
 
         User::create($data);
@@ -76,6 +78,7 @@ class UserController extends Controller
         $dataUser= User::findOrFail($user_id);
 
         $dataUser->name = $request->name;
+        $dataUser->role = $request->role;
         $dataUser->email = $request->email;
         $dataUser->password = Hash::make($request->password);
 
