@@ -24,7 +24,7 @@
                     <option value="">-- Pilih Nomor Tiket --</option>
                     @foreach($pengaduans as $p)
                         <option value="{{ $p->pengaduan_id }}">
-                            #{{ $p->nomor_tiket }} - {{ Str::limit($p->judul, 30) }} ({{ $p->warga->nama }})
+                            #{{ $p->nomor_tiket }} - {{ Str::limit($p->judul, 30) }} ({{ $p->nama_pelapor }})
                         </option>
                     @endforeach
                 </select>

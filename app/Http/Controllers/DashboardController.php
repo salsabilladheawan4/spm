@@ -8,14 +8,9 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display the dashboard.
-     */
     public function index()
     {
-        // ======================
-        // STATISTIK PENGADUAN
-        // ======================
+        // 1. Statistik Pengaduan
         $total_aduan = Pengaduan::count();
 
         $aduan_proses = Pengaduan::whereIn('status', [
@@ -26,25 +21,16 @@ class DashboardController extends Controller
 
         $aduan_selesai = Pengaduan::where('status', 'selesai')->count();
 
-        // ======================
-        // PENGADUAN TERBARU
-        // ======================
-        $recents = Pengaduan::with('warga')
-            ->latest()
+        $recents = Pengaduan::latest()
             ->take(5)
             ->get();
 
-        // ======================
-        // PENILAIAN LAYANAN TERBARU
-        // ======================
+        // 3. Penilaian Layanan Terbaru
         $penilaian_layanan = PenilaianLayanan::with('pengaduan')
             ->latest()
             ->take(5)
             ->get();
 
-        // ======================
-        // KIRIM KE VIEW
-        // ======================
         return view('pages.dashboard.dashboard', compact(
             'total_aduan',
             'aduan_proses',

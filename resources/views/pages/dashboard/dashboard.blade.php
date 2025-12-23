@@ -8,14 +8,13 @@
         <h3 class="fw-semibold mb-4">Statistik Pengaduan</h3>
     </div>
 
+    {{-- Kartu Statistik --}}
     <div class="col-lg-4">
         <div class="card">
             <div class="card-body">
                 <div class="row align-items-center">
-                    <div class="col-4">
-                        <div class="text-center">
-                            <i class="ti ti-clipboard-text text-primary" style="font-size: 3rem;"></i>
-                        </div>
+                    <div class="col-4 text-center">
+                        <i class="ti ti-clipboard-text text-primary" style="font-size: 3rem;"></i>
                     </div>
                     <div class="col-8">
                         <h6 class="text-muted font-semibold">Total Pengaduan</h6>
@@ -30,10 +29,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="row align-items-center">
-                    <div class="col-4">
-                        <div class="text-center">
-                            <i class="ti ti-clock text-warning" style="font-size: 3rem;"></i>
-                        </div>
+                    <div class="col-4 text-center">
+                        <i class="ti ti-clock text-warning" style="font-size: 3rem;"></i>
                     </div>
                     <div class="col-8">
                         <h6 class="text-muted font-semibold">Sedang Diproses</h6>
@@ -48,10 +45,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="row align-items-center">
-                    <div class="col-4">
-                        <div class="text-center">
-                            <i class="ti ti-circle-check text-success" style="font-size: 3rem;"></i>
-                        </div>
+                    <div class="col-4 text-center">
+                        <i class="ti ti-circle-check text-success" style="font-size: 3rem;"></i>
                     </div>
                     <div class="col-8">
                         <h6 class="text-muted font-semibold">Aduan Selesai</h6>
@@ -64,125 +59,114 @@
 </div>
 
 <div class="row">
+    {{-- Tabel Pengaduan Masuk Terbaru --}}
     <div class="col-lg-12 d-flex align-items-stretch">
         <div class="card w-100">
             <div class="card-body p-4">
                 <h5 class="card-title fw-semibold mb-4">Pengaduan Masuk Terbaru</h5>
                 <div class="table-responsive">
-
                     <table class="table text-nowrap mb-0 align-middle">
                         <thead class="text-dark fs-4">
                             <tr>
-                                <th class="border-bottom-0">
-                                    <h6 class="fw-semibold mb-0">No. Tiket</h6>
-                                </th>
-                                <th class="border-bottom-0">
-                                    <h6 class="fw-semibold mb-0">Pelapor & Judul</h6>
-                                </th>
-                                <th class="border-bottom-0">
-                                    <h6 class="fw-semibold mb-0">Status</h6>
-                                </th>
-                                <th class="border-bottom-0">
-                                    <h6 class="fw-semibold mb-0">Tanggal</h6>
-                                </th>
+                                <th>No. Tiket</th>
+                                <th>Pelapor & Judul</th>
+                                <th>Status</th>
+                                <th>Tanggal</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($recents as $item)
                             <tr>
-                                <td class="border-bottom-0">
-                                    <h6 class="fw-semibold mb-0">#{{ $item->nomor_tiket }}</h6>
-                                </td>
-                                <td class="border-bottom-0">
-                                    <h6 class="fw-semibold mb-1">{{ $item->warga->nama }}</h6>
+                                <td>#{{ $item->nomor_tiket }}</td>
+                                <td>
+                                    {{-- PERUBAHAN: Gunakan nama_pelapor bukan relasi warga --}}
+                                    <h6 class="fw-semibold mb-1">{{ $item->nama_pelapor }}</h6>
                                     <span class="fw-normal text-muted">{{ Str::limit($item->judul, 25) }}</span>
                                 </td>
-                                <td class="border-bottom-0">
+                                <td>
                                     @php
-                                    $color = 'secondary';
-                                    if($item->status == 'pending') $color = 'secondary';
-                                    if($item->status == 'verifikasi') $color = 'info';
-                                    if($item->status == 'proses') $color = 'warning';
-                                    if($item->status == 'selesai') $color = 'success';
-                                    if($item->status == 'ditolak') $color = 'danger';
+                                        $colors = [
+                                            'pending' => 'secondary',
+                                            'verifikasi' => 'info',
+                                            'proses' => 'warning',
+                                            'selesai' => 'success',
+                                            'ditolak' => 'danger'
+                                        ];
+                                        $color = $colors[$item->status] ?? 'secondary';
                                     @endphp
                                     <span class="badge bg-{{ $color }} rounded-3 fw-semibold">
                                         {{ ucfirst($item->status) }}
                                     </span>
                                 </td>
-                                <td class="border-bottom-0">
-                                    <p class="mb-0 fw-normal">{{ $item->created_at->format('d M Y') }}</p>
-                                </td>
+                                <td>{{ $item->created_at->format('d M Y') }}</td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center border-bottom-0 py-4">
-                                    <img src="{{ asset('assets-admin/images/products/s1.jpg') }}" alt="Kosong" width="50" class="mb-2 grayscale" style="filter: grayscale(1);">
-                                    <p class="mb-0 fw-normal text-muted">Belum ada pengaduan masuk.</p>
-                                </td>
+                                <td colspan="4" class="text-center py-4 text-muted">Belum ada pengaduan masuk.</td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
-
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="row mt-5">
-        <div class="col-lg-12">
-            <h5 class="fw-semibold mb-4">Statistik Penilaian Layanan</h5>
-
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped text-nowrap mb-0 align-middle">
-                            <thead class="text-dark fs-5">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Pengaduan</th>
-                                    <th>Rating</th>
-                                    <th>Komentar</th>
-                                    <th>Tanggal Penilaian</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($penilaian_layanan as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>
-                                        <strong>#{{ $item->pengaduan->pengaduan_id }}</strong><br>
-                                        <small class="text-muted">
-                                            {{ Str::limit($item->pengaduan->judul, 40) }}
-                                        </small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-warning text-dark">
-                                            {{ $item->rating }} ⭐
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {{ $item->komentar ? Str::limit($item->komentar, 40) : '-' }}
-                                    </td>
-                                    <td>
-                                        {{ $item->created_at->format('d M Y') }}
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
-                                        Belum ada penilaian layanan.
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    {{-- Tabel Penilaian Layanan --}}
+    <div class="col-lg-12 mt-4">
+        <div class="card">
+            <div class="card-body p-4">
+                <h5 class="card-title fw-semibold mb-4">Statistik Penilaian Layanan</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped text-nowrap mb-0 align-middle">
+                        <thead class="text-dark fs-5">
+                            <tr>
+                                <th>No</th>
+                                <th>Pengaduan</th>
+                                <th>Rating</th>
+                                <th>Komentar</th>
+                                <th>Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($penilaian_layanan as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>
+                                    <strong>#{{ $item->pengaduan->nomor_tiket }}</strong><br>
+                                    <small class="text-muted">{{ Str::limit($item->pengaduan->judul, 40) }}</small>
+                                </td>
+                                <td><span class="badge bg-warning text-dark">{{ $item->rating }} ⭐</span></td>
+                                <td class="text-wrap">{{ $item->komentar ?? '-' }}</td>
+                                <td>{{ $item->created_at->format('d M Y') }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Belum ada penilaian layanan.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 @endsection
+
+{{-- SOLUSI 2: Skrip SweetAlert2 --}}
+@push('scripts-bottom')
+    @if(session('success'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            title: "Berhasil!",
+            text: "{!! session('success') !!}",
+            icon: "success",
+            confirmButtonColor: "#5d87ff",
+            timer: 5000
+        });
+    </script>
+    @endif
+@endpush

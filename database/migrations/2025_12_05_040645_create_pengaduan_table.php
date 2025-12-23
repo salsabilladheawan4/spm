@@ -14,11 +14,7 @@ return new class extends Migration
        Schema::create('pengaduan', function (Blueprint $table) {
             $table->bigIncrements('pengaduan_id');
             $table->string('nomor_tiket')->unique(); // Contoh: TIKET-202501-001
-
-            // Relasi ke Warga
-            $table->unsignedBigInteger('warga_id');
-            $table->foreign('warga_id')->references('warga_id')->on('wargas')->onDelete('cascade');
-
+            $table->string('nama_pelapor');
             // Relasi ke Kategori
             $table->unsignedBigInteger('kategori_id');
             $table->foreign('kategori_id')->references('kategori_id')->on('kategori_pengaduan');

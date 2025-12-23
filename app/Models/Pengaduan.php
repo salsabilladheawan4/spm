@@ -7,14 +7,17 @@ class Pengaduan extends Model
 {
     protected $table      = 'pengaduan';
     protected $primaryKey = 'pengaduan_id';
-    protected $guarded    = [];
-
-    // Relasi ke Warga
-    public function warga()
-    {
-        return $this->belongsTo(Warga::class, 'warga_id', 'warga_id');
-    }
-
+    protected $fillable = [
+    'nomor_tiket',
+    'nama_pelapor', // Tambahkan ini
+    'kategori_id',
+    'judul',
+    'deskripsi',
+    'status',
+    'lokasi_text',
+    'rt',
+    'rw',
+];
     // Relasi ke Kategori
     public function kategori()
     {

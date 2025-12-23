@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
-use App\Models\Warga;
 use App\Models\Pengaduan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\KategoriPengaduan;
+use Illuminate\Support\Facades\Storage;
 
 class PengaduanController extends Controller
 {
@@ -16,10 +16,10 @@ class PengaduanController extends Controller
      */
     public function index()
     {
-        // Eager loading relasi warga dan kategori
-        $items = Pengaduan::with(['warga', 'kategori'])->latest()->paginate(10);
+        // Eager loading relasi kategori
+        $items = Pengaduan::with(['kategori'])->latest()->paginate(10);
         return view('pages.pengaduan.index', compact('items'));
-        
+
     }
 
     /**
@@ -27,9 +27,8 @@ class PengaduanController extends Controller
      */
     public function create()
     {
-       $wargas = Warga::all(); // Untuk dropdown pilih warga
         $kategoris = KategoriPengaduan::all();
-        return view('pages.pengaduan.create', compact('wargas', 'kategoris'));
+        return view('pages.pengaduan.create', compact('kategoris'));
     }
 
     /**
@@ -38,7 +37,7 @@ class PengaduanController extends Controller
     public function store(Request $request)
     {
        $request->validate([
-            'warga_id'    => 'required|exists:wargas,warga_id',
+            'nama_pelapor' => 'required|string|max:100',
             'kategori_id' => 'required|exists:kategori_pengaduan,kategori_id',
             'judul'       => 'required|string|max:200',
             'deskripsi'   => 'required',
@@ -51,7 +50,7 @@ class PengaduanController extends Controller
         // 2. Simpan Data Pengaduan
         $pengaduan = Pengaduan::create([
             'nomor_tiket' => $nomor_tiket,
-            'warga_id'    => $request->warga_id,
+            'nama_pelapor' => $request->nama_pelapor,
             'kategori_id' => $request->kategori_id,
             'judul'       => $request->judul,
             'deskripsi'   => $request->deskripsi,
@@ -78,7 +77,7 @@ class PengaduanController extends Controller
             ]);
         }
 
-        return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil dibuat!');
+        return redirect()->route('dashboard')->with('success', 'Laporan Anda dengan nomor tiket #' . $nomor_tiket . ' berhasil terkirim! Tim kami akan segera menindaklanjuti.');
     }
 
     /**
@@ -86,7 +85,7 @@ class PengaduanController extends Controller
      */
     public function show(string $id)
     {
-        $pengaduan = Pengaduan::with(['warga', 'kategori', 'media'])->findOrFail($id);
+        $pengaduan = Pengaduan::with(['kategori', 'media'])->findOrFail($id);
         return view('pages.pengaduan.show', compact('pengaduan'));
     }
 

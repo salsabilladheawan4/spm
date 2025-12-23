@@ -39,7 +39,7 @@
           @foreach ($items as $item)
           <tr>
             <td class="fw-semibold">#{{ $item->nomor_tiket }}</td>
-            <td>{{ $item->warga->nama }}</td>
+            <td>{{ $item->nama_pelapor }}</td>
             <td>{{ $item->kategori->nama }}</td>
             <td>{{ Str::limit($item->judul, 30) }}</td>
             <td>
@@ -71,11 +71,11 @@
           </tr>
           @endforeach
         </tbody>
-        <div class="mt-3">
-          {{ $items->links() }}
-        </div>
       </table>
     </div>
+    <div class="mt-3">
+          {{ $items->links() }}
+        </div>
   </div>
 </div>
 @endsection

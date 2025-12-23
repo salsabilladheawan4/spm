@@ -3,14 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\WargaController;
+use App\Http\Controllers\AsetController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\KategoriPengaduanController;
-use App\Http\Controllers\PenilaianlayananController;
 use App\Http\Controllers\TindakLanjutController;
+use App\Http\Controllers\KategoriPengaduanController;
+use App\Http\Controllers\PenilaianLayananController;
 
-// Rute Publik (Tanpa Login)
+// 1. RUTE PUBLIK (Bisa diakses tanpa login)
 Route::get('/', function () {
     return redirect()->route('auth.login');
 });
@@ -21,36 +21,41 @@ Route::get('register', [AuthController::class, 'showRegisterForm'])->name('regis
 Route::post('register', [AuthController::class, 'register'])->name('register.submit');
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rute yang Memerlukan Login (Menggunakan middleware isLogin)
+// 2. RUTE TERPROTEKSI (Harus Login)
 Route::middleware(['isLogin'])->group(function () {
+
+    // Dashboard bisa diakses semua role yang login
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // 1. Letakkan rute KHUSUS WARGA (Create & Store) paling atas
-    // agar tidak tertabrak rute ID
+    // --- GRUP WARGA ---
+    // Pastikan rute /create berada DI ATAS rute resource atau rute dengan parameter {id}
     Route::middleware(['checkRole:warga'])->group(function () {
         Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
         Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
-
-        Route::get('/penilaian/create', [PenilaianLayananController::class, 'create'])->name('penilaian.create');
-        Route::post('/penilaian', [PenilaianLayananController::class, 'store'])->name('penilaian.store');
     });
 
-    // 2. Rute KHUSUS ADMIN & STAFF (Index & Show)
+    // --- GRUP ADMIN & STAFF (Operasional) ---
     Route::middleware(['checkRole:admin,staff'])->group(function () {
-        Route::resource('warga', WargaController::class);
-        Route::resource('tindak-lanjut', TindakLanjutController::class);
-
-        // Rute ini menggunakan {pengaduan_id}, jadi harus di bawah /create
+        // Data Pengaduan (Index & Detail)
         Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
         Route::get('/pengaduan/{pengaduan_id}', [PengaduanController::class, 'show'])->name('pengaduan.show');
+        Route::delete('/pengaduan/{pengaduan_id}', [PengaduanController::class, 'destroy'])->name('pengaduan.destroy');
 
+        // Tindak Lanjut
+        Route::get('/tindak-lanjut/create', [TindakLanjutController::class, 'create'])->name('tindak-lanjut.create');
+        Route::post('/tindak-lanjut', [TindakLanjutController::class, 'store'])->name('tindak-lanjut.store');
+
+        // Penilaian (Melihat daftar ulasan)
         Route::get('/penilaian', [PenilaianLayananController::class, 'index'])->name('penilaian.index');
     });
 
-    // 3. KHUSUS ADMIN
+    // --- GRUP KHUSUS ADMIN (Manajemen Sistem) ---
     Route::middleware(['checkRole:admin'])->group(function () {
         Route::resource('user', UserController::class);
-        Route::resource('kategori', KategoriPengaduanController::class);
         Route::resource('aset', AsetController::class);
+        Route::resource('kategori', KategoriPengaduanController::class)->parameters([
+            'kategori' => 'kategori_id'
+        ]);
     });
+
 });

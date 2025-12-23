@@ -46,13 +46,6 @@
                 {{-- ADMIN & STAFF: MANAJEMEN PENGADUAN & WARGA --}}
                 @if(in_array(Auth::user()->role, ['admin', 'staff']))
                 <li class="sidebar-item">
-                    <a class="sidebar-link {{ request()->routeIs('warga.*') ? 'active' : '' }}"
-                       href="{{ route('warga.index') }}">
-                        <span><i class="ti ti-users"></i></span>
-                        <span class="hide-menu">Daftar Warga</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
                     <a class="sidebar-link {{ request()->routeIs('pengaduan.index', 'pengaduan.show') ? 'active' : '' }}"
                        href="{{ route('pengaduan.index') }}">
                         <span><i class="ti ti-file-description"></i></span>

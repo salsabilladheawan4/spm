@@ -12,8 +12,8 @@
 
                 <table class="table table-borderless">
                     <tr>
-                        <td width="150"><strong>Pelapor</strong></td>
-                        <td>: {{ $pengaduan->warga->nama }}</td>
+                        <td width="150"><strong>Nama Pelapor</strong></td>
+                        <td>: {{ $pengaduan->nama_pelapor }}</td>
                     </tr>
                     <tr>
                         <td><strong>Kategori</strong></td>

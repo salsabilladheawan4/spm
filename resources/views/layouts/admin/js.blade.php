@@ -3,3 +3,4 @@
 @stack('scripts-top')
 <script src="{{ asset('assets-admin/js/main.js') }}"></script>
 @stack('scripts-bottom')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
