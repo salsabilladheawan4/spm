@@ -26,28 +26,40 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 // Rute yang Memerlukan Login (Menggunakan middleware isLogin)
 Route::middleware(['isLogin'])->group(function () {
 
+    // Rute yang bisa diakses SEMUA ROLE yang sudah login
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Resource Routes
-    Route::resource('aset', AsetController::class);
-    Route::resource('warga', WargaController::class);
-    Route::resource('user', UserController::class);
+    // --- KHUSUS ADMIN ---
+    Route::middleware(['checkRole:admin'])->group(function () {
+        Route::resource('user', UserController::class);
+        Route::resource('kategori', KategoriPengaduanController::class);
+        Route::resource('aset', AsetController::class);
+    });
 
-    // Kategori Pengaduan
-    Route::resource('kategori', KategoriPengaduanController::class)->parameters([
-        'kategori' => 'kategori_id'
-    ]);
+    // --- KHUSUS ADMIN & STAFF ---
+    Route::middleware(['checkRole:admin,staff'])->group(function () {
+        Route::resource('warga', WargaController::class);
 
-    // Pengaduan
-    Route::resource('pengaduan', PengaduanController::class)->parameters([
-        'pengaduan' => 'pengaduan_id'
-    ]);
+        // Fitur utama memproses pengaduan
+        Route::resource('tindak-lanjut', TindakLanjutController::class);
 
-    // Tindak Lanjut
-    Route::resource('tindak-lanjut', TindakLanjutController::class)->parameters([
-        'tindak-lanjut' => 'tindak_id'
-    ]);
+        // Melihat semua pengaduan
+        Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
+        Route::get('/pengaduan/{pengaduan_id}', [PengaduanController::class, 'show'])->name('pengaduan.show');
 
-    // Penilaian
-    Route::resource('penilaian', PenilaianlayananController::class);
+        // Melihat semua penilaian
+        Route::get('/penilaian', [PenilaianlayananController::class, 'index'])->name('penilaian.index');
+    });
+
+    // --- KHUSUS WARGA ---
+    Route::middleware(['checkRole:warga'])->group(function () {
+        // Warga membuat pengaduan baru
+        Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
+        Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
+
+        // Warga memberi penilaian
+        Route::get('/penilaian/create', [PenilaianlayananController::class, 'create'])->name('penilaian.create');
+        Route::post('/penilaian', [PenilaianlayananController::class, 'store'])->name('penilaian.store');
+    });
+
 });
