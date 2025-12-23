@@ -10,60 +10,44 @@ use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\KategoriPengaduanController;
 use App\Http\Controllers\PenilaianlayananController;
-use App\Http\Controllers\KategoriPelayananController;
 use App\Http\Controllers\TindakLanjutController;
 
+// Rute Publik (Tanpa Login)
 Route::get('/', function () {
     return redirect()->route('auth.login');
 });
 
-// Route untuk auth
 Route::get('login', [AuthController::class, 'index'])->name('auth.login');
 Route::post('login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [AuthController::class, 'register'])->name('register.submit');
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-
-// Route untuk dashboard admin (setelah login)
-// [PERUBAHAN] Middleware 'auth' telah dihapus
-// Route::get('/dashboard', [InventarisController::class, 'index'])->name('dashboard');
-// Route::get('/home', [InventarisController::class, 'index']);
-
-Route::resource('aset', AsetController::class);
-Route::resource('warga', WargaController::class);
-Route::resource('user', UserController::class);
-
-Route::middleware(['auth'])->group(function () {
+// Rute yang Memerlukan Login (Menggunakan middleware isLogin)
+Route::middleware(['isLogin'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    // Route untuk Warga (Sudah kamu miliki, pastikan ada)
-    Route::resource('warga', WargaController::class);
 
-    // Route untuk Kategori Pengaduan (CRUD)
-    // Parameter 'kategori' akan otomatis memetakan ke destroy($kategori), edit($kategori), dst
+    // Resource Routes
+    Route::resource('aset', AsetController::class);
+    Route::resource('warga', WargaController::class);
+    Route::resource('user', UserController::class);
+
+    // Kategori Pengaduan
     Route::resource('kategori', KategoriPengaduanController::class)->parameters([
         'kategori' => 'kategori_id'
     ]);
-    // Note: parameters() di atas opsional, tapi berguna jika route model binding error karena nama kolom bukan 'id'
 
-    // Route untuk Pengaduan (CRUD)
+    // Pengaduan
     Route::resource('pengaduan', PengaduanController::class)->parameters([
         'pengaduan' => 'pengaduan_id'
     ]);
 
+    // Tindak Lanjut
+    Route::resource('tindak-lanjut', TindakLanjutController::class)->parameters([
+        'tindak-lanjut' => 'tindak_id'
+    ]);
 
-    // Route untuk Pelayanan dan Kategori Pelayanan di dalam middleware 'auth'
-    Route::middleware(['auth'])->group(function () {
-
-        // CRUD Kategori Pelayanan
-        Route::resource('tindak-lanjut', TindakLanjutController::class)->parameters([
-            'tindak-lanjut' => 'tindak-lanjut_id'
-        ]);
-
-        // CRUD Pelayanan
-        Route::resource('penilaian', PenilaianLayananController::class)->parameters([
-            'penilaian' => 'penilaian_id'
-        ]);
-    });
+    // Penilaian
+    Route::resource('penilaian', PenilaianlayananController::class);
 });
