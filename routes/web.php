@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AsetController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\TindakLanjutController;
 use App\Http\Controllers\KategoriPengaduanController;
+use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\PenilaianLayananController;
+use App\Http\Controllers\TindakLanjutController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 // 1. RUTE PUBLIK (Bisa diakses tanpa login)
 Route::get('/', function () {
@@ -23,22 +23,27 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 // 2. RUTE TERPROTEKSI (Harus Login)
 Route::middleware(['isLogin'])->group(function () {
-
-    // Dashboard bisa diakses semua role yang login
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // --- GRUP WARGA ---
-    // Pastikan rute /create berada DI ATAS rute resource atau rute dengan parameter {id}
+    // --- GRUP KHUSUS WARGA (Hanya Bisa Melapor) ---
     Route::middleware(['checkRole:warga'])->group(function () {
         Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
         Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
+        Route::get('/penilaian/create', [PenilaianLayananController::class, 'create'])->name('penilaian.create');
+        Route::post('/penilaian', [PenilaianLayananController::class, 'store'])->name('penilaian.store');
     });
 
-    // --- GRUP ADMIN & STAFF (Operasional) ---
+    // --- GRUP ADMIN & STAFF (Bisa Mengelola Laporan) ---
     Route::middleware(['checkRole:admin,staff'])->group(function () {
-        // Data Pengaduan (Index & Detail)
+        // Data Pengaduan
         Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
         Route::get('/pengaduan/{pengaduan_id}', [PengaduanController::class, 'show'])->name('pengaduan.show');
+
+        // --- INI ADALAH RUTE YANG SEBELUMNYA HILANG ---
+        Route::get('/pengaduan/{pengaduan_id}/edit', [PengaduanController::class, 'edit'])->name('pengaduan.edit');
+        Route::put('/pengaduan/{pengaduan_id}', [PengaduanController::class, 'update'])->name('pengaduan.update');
+        // ----------------------------------------------
+
         Route::delete('/pengaduan/{pengaduan_id}', [PengaduanController::class, 'destroy'])->name('pengaduan.destroy');
 
         // Tindak Lanjut
@@ -47,6 +52,9 @@ Route::middleware(['isLogin'])->group(function () {
 
         // Penilaian (Melihat daftar ulasan)
         Route::get('/penilaian', [PenilaianLayananController::class, 'index'])->name('penilaian.index');
+        Route::get('/penilaian/{penilaian_id}/edit', [PenilaianLayananController::class, 'edit'])->name('penilaian.edit');
+        Route::put('/penilaian/{penilaian_id}', [PenilaianLayananController::class, 'update'])->name('penilaian.update');
+        Route::delete('/penilaian/{penilaian_id}', [PenilaianLayananController::class, 'destroy'])->name('penilaian.destroy');
     });
 
     // --- GRUP KHUSUS ADMIN (Manajemen Sistem) ---
@@ -54,8 +62,7 @@ Route::middleware(['isLogin'])->group(function () {
         Route::resource('user', UserController::class);
         Route::resource('aset', AsetController::class);
         Route::resource('kategori', KategoriPengaduanController::class)->parameters([
-            'kategori' => 'kategori_id'
+            'kategori' => 'kategori_id',
         ]);
     });
-
 });

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PenilaianLayanan;
 use App\Models\Pengaduan;
 use Illuminate\Http\Request;
+use App\Models\PenilaianLayanan;
+use Illuminate\Support\Facades\Auth;
 
 class PenilaianLayananController extends Controller
 {
@@ -15,10 +16,18 @@ class PenilaianLayananController extends Controller
     }
 
     public function create()
-    {
+{
+    if(Auth::user()->role == 'warga') {
+        // Warga hanya bisa menilai laporan mereka sendiri yang sudah SELESAI
+        $pengaduan = Pengaduan::where('nama_pelapor', Auth::user()->name)
+                              ->where('status', 'selesai')
+                              ->get();
+    } else {
         $pengaduan = Pengaduan::all();
-        return view('pages.penilaian.create', compact('pengaduan'));
     }
+
+    return view('pages.penilaian.create', compact('pengaduan'));
+}
 
     public function store(Request $request)
     {

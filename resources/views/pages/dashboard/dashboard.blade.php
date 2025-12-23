@@ -8,6 +8,30 @@
         <h3 class="fw-semibold mb-4">Statistik Pengaduan</h3>
     </div>
 
+    {{-- KHUSUS WARGA: TOMBOL QUICK ACTION --}}
+    @if(Auth::user()->role == 'warga')
+    <div class="col-12 mb-4">
+        <div class="card bg-light-primary shadow-none position-relative overflow-hidden">
+            <div class="card-body px-4 py-3">
+                <div class="row align-items-center">
+                    <div class="col-9">
+                        <h4 class="fw-semibold mb-8">Halo, {{ Auth::user()->name }}! 👋</h4>
+                        <p class="mb-2">Bagaimana pengalaman Anda dengan layanan kami? <br> Masukan Anda sangat berarti bagi kemajuan desa kita.</p>
+                        <a href="{{ route('penilaian.create') }}" class="btn btn-primary mt-2">
+                            <i class="ti ti-star me-1"></i> Beri Nilai Layanan Kami
+                        </a>
+                    </div>
+                    <div class="col-3">
+                        <div class="text-center mb-n5">
+                            <img src="{{ asset('assets-admin/images/backgrounds/rocket.png') }}" alt="" class="img-fluid mb-n4" style="width: 120px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    
     {{-- Kartu Statistik --}}
     <div class="col-lg-4">
         <div class="card">

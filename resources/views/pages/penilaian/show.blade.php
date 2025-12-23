@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title fw-semibold">Pelayanan #{{ $pelayanan->nomor_tiket ?? $pelayanan->id }}</h5>
-                <span class="badge 
+                <span class="badge
                     @php
                         $badges = [
                             'pending' => 'bg-secondary',
@@ -25,7 +25,7 @@
                 <table class="table table-borderless mt-3">
                     <tr>
                         <td width="150"><strong>Pemohon</strong></td>
-                        <td>: {{ $pelayanan->warga->nama }}</td>
+                        <td>: {{ $pelayanan->nama_pelapor }}</td>
                     </tr>
                     <tr>
                         <td><strong>Kategori</strong></td>
