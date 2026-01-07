@@ -23,6 +23,39 @@
     </div>
     @endif
 
+    <form method="GET" action="{{ route('kategori.index') }}" class="mb-3">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <input type="text"
+            name="keyword"
+            value="{{ request('keyword') }}"
+            class="form-control"
+            placeholder="Cari nama kategori">
+        </div>
+
+        <div class="col-md-3">
+          <select name="prioritas" class="form-select">
+            <option value="">-- Semua Prioritas --</option>
+            <option value="tinggi" {{ request('prioritas') == 'tinggi' ? 'selected' : '' }}>Tinggi</option>
+            <option value="sedang" {{ request('prioritas') == 'sedang' ? 'selected' : '' }}>Sedang</option>
+            <option value="rendah" {{ request('prioritas') == 'rendah' ? 'selected' : '' }}>Rendah</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <button class="btn btn-primary w-100">
+            <i class="ti ti-search"></i> Cari
+          </button>
+        </div>
+
+        <div class="col-md-2">
+          <a href="{{ route('kategori.index') }}" class="btn btn-secondary w-100">
+            Reset
+          </a>
+        </div>
+      </div>
+    </form>
+
     <div class="table-responsive">
       <table class="table table-striped text-nowrap mb-0 align-middle" id="table-kategori">
         <thead class="text-dark fs-4">

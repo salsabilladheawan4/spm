@@ -7,6 +7,7 @@
 @endpush
 
 @section('content')
+
 <div class="card w-100">
   <div class="card-body p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -22,6 +23,41 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
+
+    <form method="GET" action="{{ route('pengaduan.index') }}" class="mb-3">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <input type="text"
+            name="keyword"
+            value="{{ request('keyword') }}"
+            class="form-control"
+            placeholder="Cari nomor tiket / judul / pelapor">
+        </div>
+
+        <div class="col-md-3">
+          <select name="status" class="form-select">
+            <option value="">-- Semua Status --</option>
+            @foreach (['pending','verifikasi','proses','selesai','ditolak'] as $status)
+            <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
+              {{ ucfirst($status) }}
+            </option>
+            @endforeach
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <button class="btn btn-primary w-100">
+            <i class="ti ti-search"></i> Cari
+          </button>
+        </div>
+
+        <div class="col-md-2">
+          <a href="{{ route('pengaduan.index') }}" class="btn btn-secondary w-100">
+            Reset
+          </a>
+        </div>
+      </div>
+    </form>
 
     <div class="table-responsive">
       <table class="table table-striped text-nowrap mb-0 align-middle" id="table-pengaduan">
@@ -74,8 +110,8 @@
       </table>
     </div>
     <div class="mt-3">
-          {{ $items->links() }}
-        </div>
+      {{ $items->links() }}
+    </div>
   </div>
 </div>
 @endsection

@@ -10,11 +10,24 @@ class KategoriPengaduanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $kategoris = KategoriPengaduan::latest()->paginate(10);
+        $query = KategoriPengaduan::query();
+
+        if ($request->filled('prioritas')) {
+            $query->where('prioritas', $request->prioritas);
+        }
+
+        if ($request->filled('keyword')) {
+            $query->where('nama', 'like', "%{$request->keyword}%");
+        }
+
+        $kategoris = $query->latest()->paginate(10)->withQueryString();
+
         return view('pages.kategori.index', compact('kategoris'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.

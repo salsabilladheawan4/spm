@@ -17,12 +17,28 @@ class PengaduanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Eager loading relasi kategori
-        $items = Pengaduan::with(['kategori'])->latest()->paginate(10);
+        $query = Pengaduan::with('kategori');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('keyword')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nomor_tiket', 'like', "%{$request->keyword}%")
+                    ->orWhere('judul', 'like', "%{$request->keyword}%")
+                    ->orWhere('nama_pelapor', 'like', "%{$request->keyword}%");
+            });
+        }
+
+        $items = $query->latest()->paginate(10)->withQueryString();
+
         return view('pages.pengaduan.index', compact('items'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
