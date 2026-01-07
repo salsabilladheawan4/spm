@@ -9,17 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle($request, Closure $next, ...$roles)
     {
-        if (Auth::check() && in_array(Auth::user()->role, $roles)) {
-            return $next($request);
+        if (!in_array(auth::user()->role, $roles)) {
+            abort(403);
         }
-
-        return abort(403, 'Anda tidak punya akses ke halaman ini.');
+        return $next($request);
     }
 }

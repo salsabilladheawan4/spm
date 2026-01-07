@@ -3,27 +3,110 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm bg-light-primary">
+            <div class="card-body px-4 py-4">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{{ asset('assets-admin/images/logos/suararakyat.png') }}"
+                        alt="SIPMA"
+                        style="width: 40px; height: 50px;"
+                        class="me-3">
+                    <div>
+                        <h4 class="fw-bold mb-0">SIPMA</h4>
+                        <small class="text-muted">
+                            Sistem Informasi Pengaduan Masyarakat
+                        </small>
+                    </div>
+                </div>
+
+                <p class="mb-2">
+                    <strong>SIPMA</strong> adalah sistem informasi berbasis web yang digunakan untuk
+                    memfasilitasi masyarakat dalam menyampaikan pengaduan, keluhan, serta aspirasi
+                    terhadap layanan publik secara <strong>online, transparan, dan terstruktur</strong>.
+                </p>
+
+                <p class="mb-3">
+                    Sistem ini bertujuan untuk meningkatkan kualitas pelayanan publik dengan
+                    menyediakan mekanisme pengaduan yang mudah diakses, terdokumentasi,
+                    serta dapat dipantau status penyelesaiannya secara real-time.
+                </p>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="badge bg-primary mb-2">👤 Warga</span>
+                        <p class="text-muted mb-0">
+                            Mengajukan pengaduan dan memberikan penilaian layanan.
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="badge bg-warning text-dark mb-2">🛠 Staff</span>
+                        <p class="text-muted mb-0">
+                            Menangani dan menindaklanjuti pengaduan masyarakat.
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="badge bg-success mb-2">⚙️ Admin</span>
+                        <p class="text-muted mb-0">
+                            Mengelola sistem, pengguna, dan data pengaduan.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-lg-12">
         <h3 class="fw-semibold mb-4">Statistik Pengaduan</h3>
     </div>
 
-    {{-- KHUSUS WARGA: TOMBOL QUICK ACTION --}}
-    @if(Auth::user()->role == 'warga')
+    {{-- KHUSUS WARGA: QUICK ACTION --}}
+    @if(Auth::user()->role === 'warga')
     <div class="col-12 mb-4">
         <div class="card bg-light-primary shadow-none position-relative overflow-hidden">
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
                     <div class="col-9">
-                        <h4 class="fw-semibold mb-8">Halo, {{ Auth::user()->name }}! 👋</h4>
-                        <p class="mb-2">Bagaimana pengalaman Anda dengan layanan kami? <br> Masukan Anda sangat berarti bagi kemajuan desa kita.</p>
-                        <a href="{{ route('penilaian.create') }}" class="btn btn-primary mt-2">
-                            <i class="ti ti-star me-1"></i> Beri Nilai Layanan Kami
-                        </a>
+                        <h4 class="fw-semibold mb-2">
+                            Halo, {{ Auth::user()->name }}! 👋
+                        </h4>
+
+                        <p class="mb-2">
+                            Terima kasih telah berpartisipasi dalam sistem pengaduan masyarakat.
+                        </p>
+
+                        {{-- STATUS PERMOHONAN STAFF --}}
+                        @if(Auth::user()->staff_status === 'none')
+                        <form action="{{ route('staff.request') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-warning mt-2">
+                                <i class="ti ti-user-plus me-1"></i>
+                                Ajukan Permohonan Jadi Staff
+                            </button>
+                        </form>
+
+                        @elseif(Auth::user()->staff_status === 'pending')
+                        <span class="badge bg-warning text-dark mt-2">
+                            ⏳ Permohonan Staff Sedang Diproses Admin
+                        </span>
+
+                        @elseif(Auth::user()->staff_status === 'rejected')
+                        <span class="badge bg-danger mt-2">
+                            ❌ Permohonan Staff Ditolak
+                        </span>
+                        @endif
+
                     </div>
+
                     <div class="col-3">
                         <div class="text-center mb-n5">
-                            <img src="{{ asset('assets-admin/images/backgrounds/rocket.png') }}" alt="" class="img-fluid mb-n4" style="width: 120px;">
+                            <img src="{{ asset('assets-admin/images/backgrounds/rocket.png') }}"
+                                alt=""
+                                class="img-fluid mb-n4"
+                                style="width: 120px;">
                         </div>
                     </div>
                 </div>
@@ -31,7 +114,8 @@
         </div>
     </div>
     @endif
-    
+
+
     {{-- Kartu Statistik --}}
     <div class="col-lg-4">
         <div class="card">
@@ -109,14 +193,14 @@
                                 </td>
                                 <td>
                                     @php
-                                        $colors = [
-                                            'pending' => 'secondary',
-                                            'verifikasi' => 'info',
-                                            'proses' => 'warning',
-                                            'selesai' => 'success',
-                                            'ditolak' => 'danger'
-                                        ];
-                                        $color = $colors[$item->status] ?? 'secondary';
+                                    $colors = [
+                                    'pending' => 'secondary',
+                                    'verifikasi' => 'info',
+                                    'proses' => 'warning',
+                                    'selesai' => 'success',
+                                    'ditolak' => 'danger'
+                                    ];
+                                    $color = $colors[$item->status] ?? 'secondary';
                                     @endphp
                                     <span class="badge bg-{{ $color }} rounded-3 fw-semibold">
                                         {{ ucfirst($item->status) }}
@@ -181,16 +265,16 @@
 
 {{-- SOLUSI 2: Skrip SweetAlert2 --}}
 @push('scripts-bottom')
-    @if(session('success'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        Swal.fire({
-            title: "Berhasil!",
-            text: "{!! session('success') !!}",
-            icon: "success",
-            confirmButtonColor: "#5d87ff",
-            timer: 5000
-        });
-    </script>
-    @endif
+@if(session('success'))
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    Swal.fire({
+        title: "Berhasil!",
+        text: "{!! session('success') !!}",
+        icon: "success",
+        confirmButtonColor: "#5d87ff",
+        timer: 5000
+    });
+</script>
+@endif
 @endpush

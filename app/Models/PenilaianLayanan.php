@@ -25,4 +25,9 @@ class PenilaianLayanan extends Model
     {
         return $this->belongsTo(Pengaduan::class, 'pengaduan_id', 'pengaduan_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

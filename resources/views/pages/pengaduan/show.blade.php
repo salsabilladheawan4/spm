@@ -23,7 +23,7 @@
                         <td><strong>Tanggal</strong></td>
                         <td>: {{ $pengaduan->created_at->format('d M Y, H:i') }}</td>
                     </tr>
-                     <tr>
+                    <tr>
                         <td><strong>Lokasi</strong></td>
                         <td>: {{ $pengaduan->lokasi_text }} (RT {{ $pengaduan->rt }}/RW {{ $pengaduan->rw }})</td>
                     </tr>
@@ -35,19 +35,58 @@
         </div>
     </div>
 
+    <hr>
+    <h5 class="fw-semibold mt-4">Riwayat Tindak Lanjut</h5>
+
+    @if($pengaduan->tindakLanjut->count())
+    @foreach($pengaduan->tindakLanjut as $tl)
+    <div class="card mb-3">
+        <div class="card-body">
+            <strong>{{ $tl->aksi }}</strong>
+            <p class="mb-1 text-muted">
+                Petugas: {{ $tl->petugas }} <br>
+                {{ $tl->created_at->format('d M Y H:i') }}
+            </p>
+
+            @if($tl->catatan)
+            <p>{{ $tl->catatan }}</p>
+            @endif
+
+            {{-- FOTO BUKTI --}}
+            @php
+            $fotoTL = $tl->media->first();
+            @endphp
+
+            @if($fotoTL)
+            <img src="{{ asset('storage/'.$fotoTL->file_url) }}"
+                class="img-fluid rounded mt-2"
+                style="max-height:250px">
+            @else
+            <small class="text-muted">Tidak ada foto bukti</small>
+            @endif
+        </div>
+    </div>
+    @endforeach
+    @else
+    <div class="alert alert-secondary">
+        Belum ada tindak lanjut.
+    </div>
+    @endif
+
+
     <div class="col-md-4">
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title fw-semibold mb-3">Bukti Lampiran</h5>
                 @php
-                    $foto = $pengaduan->media->first(); // Mengambil foto pertama
+                $foto = $pengaduan->media->first(); // Mengambil foto pertama
                 @endphp
 
                 @if($foto)
-                    <img src="{{ asset('storage/' . $foto->file_url) }}" class="img-fluid rounded" alt="Bukti Foto">
-                    <p class="text-muted small mt-2">{{ $foto->caption }}</p>
+                <img src="{{ asset('storage/' . $foto->file_url) }}" class="img-fluid rounded" alt="Bukti Foto">
+                <p class="text-muted small mt-2">{{ $foto->caption }}</p>
                 @else
-                    <div class="alert alert-secondary">Tidak ada lampiran foto.</div>
+                <div class="alert alert-secondary">Tidak ada lampiran foto.</div>
                 @endif
             </div>
         </div>

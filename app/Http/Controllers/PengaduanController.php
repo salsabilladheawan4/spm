@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
+use App\Models\User;
 use App\Models\Pengaduan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\KategoriPengaduan;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\PengaduanBaruNotification;
 
 class PengaduanController extends Controller
 {
@@ -19,7 +22,6 @@ class PengaduanController extends Controller
         // Eager loading relasi kategori
         $items = Pengaduan::with(['kategori'])->latest()->paginate(10);
         return view('pages.pengaduan.index', compact('items'));
-
     }
 
     /**
@@ -36,56 +38,64 @@ class PengaduanController extends Controller
      */
     public function store(Request $request)
     {
-       $request->validate([
+        $request->validate([
             'nama_pelapor' => 'required|string|max:100',
-            'kategori_id' => 'required|exists:kategori_pengaduan,kategori_id',
-            'judul'       => 'required|string|max:200',
-            'deskripsi'   => 'required',
-            'bukti_foto'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi foto
+            'kategori_id'  => 'required|exists:kategori_pengaduan,kategori_id',
+            'judul'        => 'required|string|max:200',
+            'deskripsi'    => 'required',
+            'bukti_foto'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // 1. Generate Nomor Tiket Otomatis (Contoh: TIKET-UNIQID)
         $nomor_tiket = 'TKT-' . strtoupper(Str::random(8));
 
-        // 2. Simpan Data Pengaduan
         $pengaduan = Pengaduan::create([
-            'nomor_tiket' => $nomor_tiket,
+            'nomor_tiket'  => $nomor_tiket,
             'nama_pelapor' => $request->nama_pelapor,
-            'kategori_id' => $request->kategori_id,
-            'judul'       => $request->judul,
-            'deskripsi'   => $request->deskripsi,
-            'status'      => 'pending',
-            'lokasi_text' => $request->lokasi_text,
-            'rt'          => $request->rt,
-            'rw'          => $request->rw,
+            'kategori_id'  => $request->kategori_id,
+            'judul'        => $request->judul,
+            'deskripsi'    => $request->deskripsi,
+            'status'       => 'pending',
+            'lokasi_text'  => $request->lokasi_text,
+            'rt'           => $request->rt,
+            'rw'           => $request->rw,
         ]);
 
-        // 3. Proses Upload ke Tabel Media
+        // 🔔 Notifikasi ke admin
+        User::where('role', 'admin')->each(function ($admin) use ($pengaduan) {
+            $admin->notify(new PengaduanBaruNotification($pengaduan));
+        });
+
+        // 📷 Upload foto (OPSIONAL)
         if ($request->hasFile('bukti_foto')) {
             $file = $request->file('bukti_foto');
-            // Simpan fisik file ke folder storage/app/public/uploads
-            $path = $file->store('uploads', 'public');
+            $path = $file->store('uploads/pengaduan', 'public');
 
-            // Simpan record ke tabel media
             Media::create([
-                'ref_table' => 'pengaduan',
-                'ref_id'    => $pengaduan->pengaduan_id,
-                'file_url'  => $path,
-                'caption'   => 'Bukti Pengaduan',
-                'mime_type' => $file->getClientMimeType(),
-                'sort_order'=> 1
+                'ref_table'  => 'pengaduan',
+                'ref_id'     => $pengaduan->pengaduan_id,
+                'file_url'   => $path,
+                'caption'    => 'Bukti Pengaduan',
+                'mime_type'  => $file->getClientMimeType(),
+                'sort_order' => 1
             ]);
         }
 
-        return redirect()->route('dashboard')->with('success', 'Laporan Anda dengan nomor tiket #' . $nomor_tiket . ' berhasil terkirim! Tim kami akan segera menindaklanjuti.');
+        return redirect()->route('dashboard')
+            ->with('success', 'Laporan #' . $nomor_tiket . ' berhasil dikirim');
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $pengaduan = Pengaduan::with(['kategori', 'media'])->findOrFail($id);
+        $pengaduan = Pengaduan::with([
+            'kategori',
+            'media',
+            'tindakLanjut.media'
+        ])->findOrFail($id);
+
         return view('pages.pengaduan.show', compact('pengaduan'));
     }
 
@@ -108,9 +118,14 @@ class PengaduanController extends Controller
         ]);
 
         $pengaduan = Pengaduan::findOrFail($id);
-        $pengaduan->update([
-            'status' => $request->status
-        ]);
+        $pengaduan->update(['status' => $request->status]);
+
+        User::where('role', 'admin')->each(function ($admin) use ($pengaduan) {
+            $admin->notify(new PengaduanBaruNotification($pengaduan));
+        });
+
+
+
 
         return redirect()->route('pengaduan.index')->with('success', 'Status pengaduan berhasil diperbarui!');
     }

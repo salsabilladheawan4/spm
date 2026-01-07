@@ -27,9 +27,14 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+              <a class="nav-link nav-icon-hover position-relative"
+                href="{{ route('notifications.index') }}">
+
                 <i class="ti ti-bell-ringing"></i>
-                <div class="notification bg-primary rounded-circle"></div>
+
+                @if(auth()->user()->unreadNotifications->count() > 0)
+                <span class="notification bg-danger rounded-circle"></span>
+                @endif
               </a>
             </li>
           </ul>

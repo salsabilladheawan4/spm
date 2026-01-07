@@ -34,75 +34,99 @@
 
                 {{-- KHUSUS ADMIN --}}
                 @if (Auth::user()->role == 'admin')
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}"
-                            href="{{ route('kategori.index') }}">
-                            <span><i class="ti ti-category"></i></span>
-                            <span class="hide-menu">Data Kategori</span>
-                        </a>
-                    </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}"
+                        href="{{ route('kategori.index') }}">
+                        <span><i class="ti ti-category"></i></span>
+                        <span class="hide-menu">Data Kategori</span>
+                    </a>
+                </li>
                 @endif
 
                 {{-- ADMIN & STAFF: MANAJEMEN PENGADUAN & WARGA --}}
                 @if (in_array(Auth::user()->role, ['admin', 'staff']))
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->routeIs('pengaduan.index', 'pengaduan.show') ? 'active' : '' }}"
-                            href="{{ route('pengaduan.index') }}">
-                            <span><i class="ti ti-file-description"></i></span>
-                            <span class="hide-menu">Data Pengaduan</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->routeIs('tindak-lanjut.create') ? 'active' : '' }}"
-                            href="{{ route('tindak-lanjut.create') }}">
-                            <span><i class="ti ti-edit"></i></span>
-                            <span class="hide-menu">Input Tindak Lanjut</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->routeIs('penilaian.index') ? 'active' : '' }}"
-                            href="{{ route('penilaian.index') }}">
-                            <span><i class="ti ti-star"></i></span>
-                            <span class="hide-menu">Ulasan Layanan</span>
-                        </a>
-                    </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('pengaduan.index', 'pengaduan.show') ? 'active' : '' }}"
+                        href="{{ route('pengaduan.index') }}">
+                        <span><i class="ti ti-file-description"></i></span>
+                        <span class="hide-menu">Data Pengaduan</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('tindak-lanjut.create') ? 'active' : '' }}"
+                        href="{{ route('tindak-lanjut.create') }}">
+                        <span><i class="ti ti-edit"></i></span>
+                        <span class="hide-menu">Input Tindak Lanjut</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('penilaian.index') ? 'active' : '' }}"
+                        href="{{ route('penilaian.index') }}">
+                        <span><i class="ti ti-star"></i></span>
+                        <span class="hide-menu">Ulasan Layanan</span>
+                    </a>
+                </li>
                 @endif
 
                 {{-- KHUSUS WARGA: BUAT PENGADUAN & PENILAIAN --}}
                 @if (Auth::user()->role == 'warga')
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->routeIs('pengaduan.create') ? 'active' : '' }}"
-                            href="{{ route('pengaduan.create') }}">
-                            <span><i class="ti ti-plus"></i></span>
-                            <span class="hide-menu">Buat Pengaduan</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->routeIs('penilaian.create') ? 'active' : '' }}"
-                            href="{{ route('penilaian.create') }}">
-                            <span><i class="ti ti-star"></i></span>
-                            <span class="hide-menu">Beri Penilaian</span>
-                        </a>
-                    </li>
-                @endif
-
-                {{-- PENGATURAN --}}
-                <li class="nav-small-cap">
-                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                    <span class="hide-menu">Pengaturan</span>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('pengaduan.create') ? 'active' : '' }}"
+                        href="{{ route('pengaduan.create') }}">
+                        <span><i class="ti ti-plus"></i></span>
+                        <span class="hide-menu">Buat Pengaduan</span>
+                    </a>
                 </li>
+
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('penilaian.create') ? 'active' : '' }}"
+                        href="{{ route('penilaian.create') }}">
+                        <span><i class="ti ti-star"></i></span>
+                        <span class="hide-menu">Beri Penilaian</span>
+                    </a>
+                </li>
+                @endif
 
                 {{-- KHUSUS ADMIN: MANAJEMEN USER --}}
                 @if (Auth::user()->role == 'admin')
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->routeIs('user.*') ? 'active' : '' }}"
-                            href="{{ route('user.index') }}">
-                            <span><i class="ti ti-user-cog"></i></span>
-                            <span class="hide-menu">Manajemen User</span>
-                        </a>
-                    </li>
+
+                <li class="nav-small-cap mt-3">
+                    <i class="ti ti-settings nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Administrasi Sistem</span>
+                </li>
+
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('user.*') ? 'active' : '' }}"
+                        href="{{ route('user.index') }}">
+                        <span>
+                            <i class="ti ti-users"></i>
+                        </span>
+                        <span class="hide-menu">Manajemen Pengguna</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('staff.request.list') ? 'active' : '' }}"
+                        href="{{ route('staff.request.list') }}">
+                        <span>
+                            <i class="ti ti-user-check"></i>
+                        </span>
+                        <span class="hide-menu">Permohonan Staff</span>
+                        @php
+                        $pendingStaff = \App\Models\User::where('staff_status', 'pending')->count();
+                        @endphp
+
+                        @if($pendingStaff > 0)
+                        <span class="badge bg-warning text-dark ms-auto">
+                            {{ $pendingStaff }} 
+                        </span>
+                        @endif
+                    </a>
+                </li>
+
                 @endif
+
+
 
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="#"

@@ -41,29 +41,32 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|max:100',
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => 'required|min:8|confirmed',
-        ], [
-            'nama.required' => 'Nama tidak boleh kosong',
-            'email.required' => 'Email tidak boleh kosong',
-            'email.email' => 'Email tidak valid',
-            'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Password tidak boleh kosong',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
-        ]);
+{
+    $request->validate([
+        'nama' => 'required|max:100',
+        'email' => ['required', 'email', 'unique:users,email'],
+        'password' => 'required|min:8|confirmed',
+    ], [
+        'nama.required' => 'Nama tidak boleh kosong',
+        'email.required' => 'Email tidak boleh kosong',
+        'email.email' => 'Email tidak valid',
+        'email.unique' => 'Email sudah terdaftar',
+        'password.required' => 'Password tidak boleh kosong',
+        'password.min' => 'Password minimal 8 karakter',
+        'password.confirmed' => 'Konfirmasi password tidak cocok',
+    ]);
 
-        $data['name']     = $request->nama;
-        $data['email']    = $request->email;
-        $data['password'] = Hash::make($request->password);
+    User::create([
+        'name'     => $request->nama,
+        'email'    => $request->email,
+        'password' => Hash::make($request->password),
+        'role'     => 'warga', // 🔐 role dipaksa warga
+    ]);
 
-        User::create($data);
+    return redirect()->route('auth.login')
+        ->with('success', 'Registrasi berhasil! Silakan Login');
+}
 
-        return redirect()->route('auth.login')->with('success', 'Registrasi berhasil! Silakan Login');
-    }
 
     public function logout(Request $request)
     {

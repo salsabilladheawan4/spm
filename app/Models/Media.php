@@ -8,4 +8,14 @@ class Media extends Model
     protected $table      = 'media';
     protected $primaryKey = 'media_id';
     protected $guarded    = [];
+
+    protected $fillable = [
+    'ref_table',
+    'ref_id',
+    'file_url',
+    'caption',
+    'mime_type',
+    'sort_order'
+];
+    
 }

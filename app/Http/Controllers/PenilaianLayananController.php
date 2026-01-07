@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengaduan;
-use Illuminate\Http\Request;
 use App\Models\PenilaianLayanan;
+use App\Notifications\PenilaianBaruNotification;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+
 
 class PenilaianLayananController extends Controller
 {
@@ -16,33 +20,45 @@ class PenilaianLayananController extends Controller
     }
 
     public function create()
-{
-    if(Auth::user()->role == 'warga') {
-        // Warga hanya bisa menilai laporan mereka sendiri yang sudah SELESAI
-        $pengaduan = Pengaduan::where('nama_pelapor', Auth::user()->name)
-                              ->where('status', 'selesai')
-                              ->get();
-    } else {
-        $pengaduan = Pengaduan::all();
-    }
+    {
+        if (Auth::user()->role == 'warga') {
+            // Warga hanya bisa menilai laporan mereka sendiri yang sudah SELESAI
+            $pengaduan = Pengaduan::where('nama_pelapor', Auth::user()->name)
+                ->where('status', 'selesai')
+                ->get();
+        } else {
+            $pengaduan = Pengaduan::all();
+        }
 
-    return view('pages.penilaian.create', compact('pengaduan'));
-}
+        return view('pages.penilaian.create', compact('pengaduan'));
+    }
 
     public function store(Request $request)
     {
         $request->validate([
             'pengaduan_id' => 'required|exists:pengaduan,pengaduan_id',
-            'rating' => 'required|integer|min:1|max:5',
-            'komentar' => 'nullable'
+            'rating'       => 'required|integer|min:1|max:5',
+            'komentar'     => 'nullable'
         ]);
 
-        PenilaianLayanan::create($request->all());
+        $penilaian = PenilaianLayanan::create([
+            'pengaduan_id' => $request->pengaduan_id,
+            'rating'       => $request->rating,
+            'komentar'     => $request->komentar,
+            'user_id'      => auth::id()
+        ]);
 
-        return redirect()
-            ->route('penilaian.index')
-            ->with('success', 'Penilaian berhasil disimpan');
+        // 🔔 NOTIFIKASI KE ADMIN
+        User::where('role', 'admin')->each(function ($admin) use ($penilaian) {
+            $admin->notify(new PenilaianBaruNotification($penilaian));
+        });
+
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Penilaian berhasil dikirim');
     }
+
+
 
     public function edit($penilaian_id)
     {

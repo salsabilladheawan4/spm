@@ -6,8 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+/**
+ * @property string $staff_status
+ * @property string $role
+ */
 class User extends Authenticatable
+
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -22,7 +26,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'profile_photo',
+        'staff_status',
+        'profile_photo',        
     ];
 
     /**

@@ -2,34 +2,74 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1200">
     <title>Login Berhasil - Sistem Pengaduan Masyarakat</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #e9f7ef;
+            font-size: 18px;
+        }
+        .card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 50px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .icon-section {
+            flex: 1;
+            text-align: center;
+        }
+        .icon-section i {
+            font-size: 6rem;
+            color: #28a745;
+        }
+        .info-section {
+            flex: 2;
+        }
+        .info-section h4 {
+            font-size: 28px;
+        }
+        .info-section h5 {
+            font-size: 22px;
+        }
+        .list-unstyled li {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .btn {
+            font-size: 18px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container my-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-12 col-xl-10">
                 <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h4 class="mb-0">Login Berhasil!</h4>
+                    <!-- Icon kiri -->
+                    <div class="icon-section">
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
-                        </div>
+
+                    <!-- Info kanan -->
+                    <div class="info-section">
+                        <h4>Login Berhasil!</h4>
                         <h5>Form Login Berhasil Diproses!</h5>
                         <p class="text-muted">Data yang Anda input telah diterima sistem.</p>
 
-                        <div class="mt-4">
-                            <p><strong>Data yang dikirim:</strong></p>
-                            <ul class="list-unstyled">
-                                <li>Username: <strong>{{ $username }}</strong></li>
-                                <li>Password: <strong>{{ $password }}</strong></li>
-                            </ul>
-                        </div>
+                        <ul class="list-unstyled">
+                            <li>Username: <strong>{{ $username }}</strong></li>
+                            <li>Password: <strong>{{ $password }}</strong></li>
+                        </ul>
 
-                        <div class="d-grid gap-2 mt-4">
+                        <div class="d-grid gap-2 mt-3">
                             <a href="/auth" class="btn btn-outline-primary">
                                 <i class="fas fa-arrow-left"></i> Kembali ke Login
                             </a>
@@ -48,8 +88,5 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </body>
 </html>

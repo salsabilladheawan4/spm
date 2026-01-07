@@ -1,122 +1,172 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Notifications\StaffRequestNotification;
+
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    /* ==========================
+     *  MANAJEMEN USER (ADMIN)
+     * ========================== */
+
     public function index()
     {
-        $data['dataUser'] = User::all();
-        return view('pages.user.index', $data);
+        return view('pages.user.index', [
+            'dataUser' => User::all()
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('pages.user.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
-{
-    $request->validate([
-        'name'  => 'required|max:100',
-        'role' => 'required|in:admin,staff,warga',
-        'email' => ['required','email','unique:users,email'],
-        'password' => 'required|min:8',
-        // TAMBAHKAN VALIDASI FOTO
-        'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
-    $data['name']     = $request->name;
-    $data['email']    = $request->email;
-    $data['role']     = $request->role;
-    $data['password'] = Hash::make($request->password);
-
-    // LOGIKA UPLOAD FOTO (Tambahkan bagian ini)
-    if ($request->hasFile('profile_photo')) {
-        $file = $request->file('profile_photo');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('uploads/profile_pictures'), $filename);
-
-        // Masukkan nama file ke array $data agar tersimpan di DB
-        $data['profile_photo'] = $filename;
-    }
-
-    User::create($data); // Sekarang 'profile_photo' ada di dalam $data
-
-    return redirect()->route('user.index')->with('success', 'Penambahan Data Berhasil!');
-}
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
     {
-        //
-    }
+        $request->validate([
+            'name'           => 'required|max:100',
+            'role'           => 'required|in:admin,staff,warga',
+            'email'          => 'required|email|unique:users,email',
+            'password'       => 'required|min:8',
+            'profile_photo'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $data['dataUser'] = User::findOrFail($id);
-        return view('pages.user.edit', $data);
-    }
+        $data = [
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'role'     => $request->role,
+            'password' => Hash::make($request->password),
+        ];
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-{
-    $dataUser = User::findOrFail($id);
-
-    $dataUser->name = $request->name;
-    $dataUser->role = $request->role;
-    $dataUser->email = $request->email;
-
-    if($request->password) {
-        $dataUser->password = Hash::make($request->password);
-    }
-
-    // LOGIKA UPDATE FOTO (Tambahkan bagian ini)
-    if ($request->hasFile('profile_photo')) {
-        $file = $request->file('profile_photo');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $path = public_path('uploads/profile_pictures');
-
-        // Hapus foto lama jika ada fisiknya
-        if ($dataUser->profile_photo && file_exists($path . '/' . $dataUser->profile_photo)) {
-            unlink($path . '/' . $dataUser->profile_photo);
+        if ($request->hasFile('profile_photo')) {
+            $filename = time() . '_' . $request->file('profile_photo')->getClientOriginalName();
+            $request->file('profile_photo')->move(public_path('uploads/profile_pictures'), $filename);
+            $data['profile_photo'] = $filename;
         }
 
-        $file->move($path, $filename);
-        $dataUser->profile_photo = $filename; // Update kolom di DB
+        User::create($data);
+
+        return redirect()->route('user.index')->with('success', 'Penambahan Data Berhasil!');
     }
 
-    $dataUser->save();
-    return redirect()->route('user.index')->with('success','Data Berhasil Diupdate!');
-}
+    public function edit($id)
+    {
+        return view('pages.user.edit', [
+            'dataUser' => User::findOrFail($id)
+        ]);
+    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
-        $user->delete();
-        return redirect()->route('user.index')->with('success','Data Berhasil Dihapus!');
+        $user->update([
+            'name'  => $request->name,
+            'email' => $request->email,
+            'role'  => $request->role,
+        ]);
+
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
+        }
+
+        if ($request->hasFile('profile_photo')) {
+            $path = public_path('uploads/profile_pictures');
+
+            if ($user->profile_photo && file_exists($path . '/' . $user->profile_photo)) {
+                unlink($path . '/' . $user->profile_photo);
+            }
+
+            $filename = time() . '_' . $request->file('profile_photo')->getClientOriginalName();
+            $request->file('profile_photo')->move($path, $filename);
+
+            $user->update([
+                'profile_photo' => $filename
+            ]);
+        }
+
+        return redirect()->route('user.index')->with('success', 'Data Berhasil Diupdate!');
+    }
+
+    public function destroy($id)
+    {
+        User::findOrFail($id)->delete();
+        return redirect()->route('user.index')->with('success', 'Data Berhasil Dihapus!');
+    }
+
+    /* ==========================
+     *  PERMOHONAN STAFF
+     * ========================== */
+
+
+    public function requestStaff()
+    {
+        $user = Auth::user();
+
+        if ($user->staff_status === 'pending') {
+            return back()->with('success', 'Permohonan sudah diajukan');
+        }
+
+        $user->update(['staff_status' => 'pending']);
+
+        User::where('role', 'admin')->each(function ($admin) use ($user) {
+            $admin->notify(new StaffRequestNotification(
+                $user->name . ' mengajukan permohonan staff',
+                route('staff.request.list')
+            ));
+        });
+
+
+        return back()->with('success', 'Permohonan staff berhasil dikirim');
+    }
+
+
+    public function staffRequest()
+    {
+        return view('pages.user.staff-request', [
+            'users' => User::where('staff_status', 'pending')->get()
+        ]);
+    }
+
+    public function approveStaff($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->update([
+            'role' => 'staff',
+            'staff_status' => 'approved'
+        ]);
+
+        $user->notify(new StaffRequestNotification(
+            'Permohonan Anda disetujui admin',
+            route('dashboard')
+        ));
+
+
+        return back();
+    }
+
+
+    public function rejectStaff($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->update(['staff_status' => 'rejected']);
+
+        $user->notify(new StaffRequestNotification(
+            'Permohonan Anda ditolak admin',
+            route('dashboard')
+        ));
+
+
+        return back();
     }
 }
